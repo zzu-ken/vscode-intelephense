@@ -29,8 +29,10 @@
 ### 📸 功能预览 (Premium Features)
 
 激活后，你可以享受到 Intelephense 的所有高级功能，例如 **智能引用计数 (References)**、**增强型类型探测**、**重命名重构**等：
+![Intelephense Premium Features](screenshot/3.png)
 
-![Intelephense Premium Features](screenshots/2.png)
+![Intelephense Premium Features](screenshot/2.png)
+
 
 ### 1. macOS / Linux
 

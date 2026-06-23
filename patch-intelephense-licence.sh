@@ -110,19 +110,23 @@ else:
     print("   [intelephense.js] 未找到原 isActive 字符串，可能已改过或版本不同，跳过")
 
 # ---------- 3. 客户端：licenceKey 无值时默认 123456 ----------
-old3 = 'licenceKey:e.globalState.get(T)'
-new3 = 'licenceKey:e.globalState.get(T)||"123456"'
+# 压缩后 globalState.get(...) 的形参/宿主变量名会随版本变化（如旧版 T，1.18.5 为 C），
+# 故用正则匹配任意单字母变量，避免硬编码导致跨版本失效。
+import re
 with open(ext_file, 'r') as f:
     s = f.read()
-if new3 in s:
+done_pat = re.compile(r'licenceKey:[A-Za-z]+\.globalState\.get\([A-Za-z]+\)\|\|"123456"')
+raw_pat = re.compile(r'(licenceKey:[A-Za-z]+\.globalState\.get\([A-Za-z]+\))')
+if done_pat.search(s):
     print("   [extension.js] licenceKey 已带 123456 回退，跳过")
-elif old3 in s:
-    s = s.replace(old3, new3, 1)
+elif raw_pat.search(s):
+    m = raw_pat.search(s)
+    s = s[:m.start()] + m.group(0) + '||"123456"' + s[m.end():]
     with open(ext_file, 'w') as f:
         f.write(s)
     print("   [extension.js] licenceKey 已改为无值时使用 123456")
 else:
-    print("   [extension.js] 未找到原 licenceKey 字符串，可能已改过或版本不同，跳过")
+    print("   [extension.js] 未找到 licenceKey:globalState.get(...) 调用，可能已改过或版本不同，跳过")
 PY
 }
 
